@@ -1,0 +1,147 @@
+   <!--Stylesheet-->
+<style media="screen">
+    *,*:before,*:after{
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+    }
+    form{
+        margin:auto;
+        height: max-content;
+        width: max-content;
+        background-color: rgba(255,255,255,0.13);
+        border-radius: 10px;
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(255,255,255,0.1);
+        box-shadow: 0 0 40px rgba(8,7,16,0.6);
+        padding: 50px 35px;
+    }
+    form *{
+        font-family: 'Poppins',sans-serif;
+        color: #000000;
+        letter-spacing: 0.5px;
+        outline: none;
+        border: none;
+    }
+    form h3{
+        font-size: 32px;
+        font-weight: 500;
+        line-height: 42px;
+        text-align: center;
+    }
+
+    label{
+        display: block;
+        margin-top: 30px;
+        font-size: 16px;
+        font-weight: 500;
+    }
+    input{
+        display: block;
+        height: 50px;
+        width: 100%;
+        background-color: rgba(56, 56, 56, 0.07);
+        border-radius: 3px;
+        padding: 0 10px;
+        margin-top: 8px;
+        font-size: 14px;
+        font-weight: 300;
+    }
+
+    textarea{
+        width: 100%;
+        background-color: rgba(53, 53, 53, 0.07);
+    }
+    ::placeholder{
+        color: #464646;
+    }
+</style>
+
+
+    <div class="">
+        <div>
+            <a class="btn btn-outline-dark m-3" href="/profile"><i class="fa-solid fa-arrow-left"></i> Quay lại</a>
+        </div>
+        <div class="background">
+            <div class="shape"></div>
+            <div class="shape"></div>
+        </div>
+        <form onsubmit="return false;" id="form-update">
+            <h3>Cập nhật thông tin các nhân</h3>
+            <label for="nameUpdate">Họ và tên</label>
+            <input type="text" placeholder="Vui lòng nhập Tên của bạn" required id="nameUpdate">
+
+            <label for="sdtUpdate">Số điện thoại</label>
+            <input type="text" placeholder="Vui lòng nhập số điện thoại" required id="sdtUpdate">
+
+            <label for="emailUpdate">Email</label>
+            <input value={{data.Email}} type="text" placeholder="Vui lòng nhập email của bạn" disabled id="emailUpdate">
+
+            <label for="birthdayUpdate">Sinh nhật</label>
+            <input type="date"  required id="birthdayUpdate">
+
+            <label for="addressUpdate">Địa chỉ</label>
+            <textarea rows="4" cols="50" id="addressUpdate"></textarea>
+
+            <div id="successSignIn" class="alert alert-success mt-3" role="alert" style="display:none"></div>
+            <div id="errorSignIn" class="alert alert-danger mt-3" role="alert" style="display:none"></div>
+
+            <button class="btn btn-outline-success">Cập nhật</button>
+
+            {{!-- <div class="w-100 text-center createAccount">
+                <a class="text-light "href="register">Tạo Tài khoản mới</a>
+            </div> --}}
+
+            {{!-- <div class="social">
+            <div class="go"><i class="fab fa-google"></i>  Google</div>
+            <div class="fb"><i class="fab fa-facebook"></i>  Facebook</div>
+            </div> --}}
+        </form>
+    </div>
+
+    <script>
+        
+
+        
+        //xử li form đăng nhập
+        let formUpdate = document.getElementById('form-update')
+
+        let nameUpdate = document.getElementById('nameUpdate')
+        let sdtUpdate = document.getElementById('sdtUpdate')
+        let emailUpdate = document.getElementById('emailUpdate')
+        let birthdayUpdate = document.getElementById('birthdayUpdate')
+        let addressUpdate = document.getElementById('addressUpdate')
+
+        let alertSuccessSignIn = document.getElementById('successSignIn')
+        let alertErrorSignIn = document.getElementById('errorSignIn')
+
+        formUpdate.addEventListener('submit', () => {
+            const updateData = {
+                name: nameUpdate.value,
+                sdt: sdtUpdate.value,
+                emailCurrent: emailUpdate.value,
+                birthday: birthdayUpdate.value,
+                address: addressUpdate.value
+            }
+            fetch('/api/updateInformation',{
+                method: 'POST',
+                body: JSON.stringify(updateData),
+                headers: {'Content-Type': 'application/json'},
+            }).then((res) => res.json())
+                .then(data => {
+                    console.log(data)
+                    if(data.status == 'error') {
+                        alertSuccessSignIn.style.display = 'none'
+                        alertErrorSignIn.style.display = 'block'
+                        alertErrorSignIn.innerText= data.error
+                    }else{
+                        alertSuccessSignIn.style.display = 'block'
+                        alertErrorSignIn.style.display = 'none'
+                        alertSuccessSignIn.innerText= data.success
+                        window.location.replace("/profile")
+                    }
+                })
+        })
+    </script>
+
+

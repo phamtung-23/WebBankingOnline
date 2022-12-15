@@ -1,0 +1,89 @@
+
+  <div class="card-container mt-3">
+    <a class="pro" href="/"><i class="fa-solid fa-arrow-left"></i> Trang chủ</a>
+    {{!-- <span class="pro">PRO</span> --}}
+		{{#if data.icon}}
+    	<img class="round" width="200" height="200" src={{data.icon}} alt="user" />
+		{{else}}
+    	<img class="round" width="200" height="200" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="user" />
+		{{/if}}
+
+    {{#if data.HoVaTen}}
+			<h3>{{data.HoVaTen}}</h3>
+		{{else}}
+			<h3>Vui lòng cập nhật Họ và tên!</h3>
+		{{/if}}
+
+		{{#if data.SoDienThoai}}
+			<h6>{{data.SoDienThoai}}</h6>
+		{{else}}
+			<h6>Vui lòng cập nhật Số điện thoại!</h6>
+		{{/if}}
+
+    <h6 id="emailCurrent">{{data.Email}}</h6>
+
+		{{#if data.DiaChi}}
+			<p>{{data.DiaChi}}</p>
+		{{else}}
+			<h6>Vui lòng cập nhật địa chỉ!</h6>
+		{{/if}}
+
+    <div class="buttons">
+			<a href="/profile/update">
+				<button class="primary">
+					Update Information
+				</button>
+			</a>
+			{{!-- button thay  đổi password --}}
+			<a href="/changePassword">
+				<button class="primary ghost">
+					Change password
+				</button>
+			</a>
+    </div>
+		{{#if (soSanh data.trangthai 3)}}
+			<div class="mt-3">
+				{{!-- button quản lý user --}}
+				<a href="/profile/uploadImg">
+					<button type="button" class="btn btn-outline-danger">Cập nhật CCCD</button>
+				</a>
+				<p class="mt-3 alert alert-danger">Cập nhật chứng hình CCCD để được sử dụng các dịch vụ!!</p>
+			</div>
+		{{/if}}
+		{{#if (soSanh data.LoaiTaiKhoan 1)}}
+			<div class="mt-3">
+				{{!-- button quản lý user --}}
+				<a href="/dashboardUser">
+					<button type="button" class="btn btn-outline-info">Quản lý User</button>
+				</a>
+			</div>
+		{{/if}}
+
+		{{#if status}}
+			<div class="alert alert-success" role="alert">
+				{{success}}
+			</div>
+		{{/if}}
+		{{#if (soSanh status false)}}
+			<div class="alert alert-danger" role="alert">
+				{{error}}
+			</div>
+		{{/if}}
+    <div class="skills">
+      <h6>Skills</h6>
+      <ul>
+        <li>UI / UX</li>
+        <li>Front End Development</li>
+        <li>HTML</li>
+        <li>CSS</li>
+        <li>JavaScript</li>
+        <li>React</li>
+        <li>Node</li>
+      </ul>
+    </div>
+  </div>
+	<script>
+		window.addEventListener("load", ()=>{
+			console.log(document.getElementById('emailCurrent').innerText);
+		})
+	</script>

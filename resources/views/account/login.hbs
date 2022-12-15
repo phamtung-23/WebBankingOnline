@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Design by foolishdeveloper.com -->
+    <title>Glassmorphism login Form Tutorial in html css</title>
+ 
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+    <!--Stylesheet-->
+    <style media="screen"></style>
+</head>
+<body>
+    <div class="row">
+        <div class="col-lg-6">
+            <img class="w-100" src="https://touchcinema.com/storage/01-2019/1000x1000-1564625564.png" alt="">
+        </div>
+        <div class="col-lg-6 h-100 m-auto">
+            <form onsubmit="return false;" id="form-signIn" class="w-75 align-middle m-auto">
+                    <a class="btn btn-outline-dark m-3" href="/"><i class="fa-solid fa-arrow-left"></i> Trang chủ</a>
+                    <h3 class=" text-center">Đăng Nhập</h3> 
+                <div class="form-group">
+                    <label for="username">Email</label>
+                    <input type="text" class="form-control" placeholder="Vui lòng nhập email của bạn" required id="emailSignIn">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password"class="form-control" placeholder="Vui lòng nhập mật khẩu" required id="passSignIn">
+                </div>
+
+                <div class="w-100 text-right forgetPass">
+                    <a class="h6 text-dark "href="/forgetPass">Quên mật khẩu</a>
+                </div>
+
+                <div id="successSignIn" class="alert alert-success mt-3" role="alert" style="display:none"></div>
+                <div id="errorSignIn" class="alert alert-danger mt-3" role="alert" style="display:none"></div>
+                <div class="text-right mt-3">
+                    <button class="btn colorBtn">Đăng nhập</button>
+                </div>
+
+                <div class="w-100 text-center createAccount">
+                    <a class="text-dark "href="register">Tạo Tài khoản mới</a>
+                </div>
+
+                <div class="d-flex justify-content-center">
+                    <div class="go m-3"><i class="fab fa-google "></i>  Google</div>
+                    <div class="fb m-3"><i class="fab fa-facebook "></i>  Facebook</div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        
+
+        
+        //xử li form đăng nhập
+        let formSignIn = document.getElementById('form-signIn')
+
+        let emailSignIn = document.getElementById('emailSignIn')
+        let passSignIn = document.getElementById('passSignIn')
+
+        let alertSuccessSignIn = document.getElementById('successSignIn')
+        let alertErrorSignIn = document.getElementById('errorSignIn')
+        let countLogin = 1
+        formSignIn.addEventListener('submit', () => {
+            const loginData = {
+                email: emailSignIn.value,
+                password: passSignIn.value,
+                count: countLogin
+            }
+
+            fetch('/api/login',{
+                method: 'POST',
+                body: JSON.stringify(loginData),
+                headers: {'Content-Type': 'application/json'},
+            }).then((res) => res.json())
+                .then(data => {
+                    console.log(data)
+                    if(data.status == 'error') {
+                        alertSuccessSignIn.style.display = 'none'
+                        alertErrorSignIn.style.display = 'block'
+                        alertErrorSignIn.innerText= data.error
+                        countLogin = countLogin + 1
+                    }else{
+                        alertSuccessSignIn.style.display = 'block'
+                        alertErrorSignIn.style.display = 'none'
+                        alertSuccessSignIn.innerText= data.success
+                        countLogin = 1
+                        if(data.data.DangNhapLanDau == 1)
+                            window.location.replace("/ChangePassword")
+                        else
+                            window.location.replace("/")
+
+                    }
+                })
+        })
+    </script>
+</body>
+</html>

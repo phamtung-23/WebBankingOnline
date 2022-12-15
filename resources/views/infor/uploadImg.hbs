@@ -1,0 +1,51 @@
+
+<div class="form-updateImage">
+  <div>
+    <a href="/profile" class=" m-3 btn btn-outline-dark"><i class="fa-solid fa-arrow-left"></i> Trở về</a>
+  </div>
+  <div class="border mt-5 formImage p-3">
+    <h2>Cập nhật CCCD</h2>
+    <input id="username" type="text" value={{data.username}} style="display: none;"/>
+    <p class="nameFormImage">Họ và Tên: {{data.HoVaTen}}</p>
+    <form id="form-submit-image" action="/apiUser/upDateImage/{{data.username}}" method="post"  enctype="multipart/form-data"> 
+      <label  for="myImage">Vui lòng chọn ảnh CCCD mặt trước và sau</label>
+      <input id="files" class="form-control" type="file" name="myImage" accept="image/*" multiple required/>
+      <button id="btn-submit" class="btn mt-3 colorBtn">Upload Image</button>
+      <div id="successSignIn" class="alert alert-success mt-3" role="alert" style="display:none"></div>
+      <div id="errorSignIn" class="alert alert-danger mt-3" role="alert" style="display:none"></div>
+      <div id="preview" class="m-3"></div>
+    </form>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  //Hiển thị hình đã chọn
+  function previewFiles() {
+    const preview = document.querySelector('#preview');
+    const files = document.querySelector('input[type=file]').files;
+
+    function readAndPreview(file) {
+      if (file) {
+        const reader = new FileReader();
+
+        reader.addEventListener("load", (e) => {
+          const image = new Image();
+          image.height = 200;
+          image.width = 200;
+          image.title = file.name;
+          image.src = e.target.result;
+          preview.appendChild(image);
+        }, false);
+
+        reader.readAsDataURL(file);
+      }
+    }
+    if (files) {
+      Array.prototype.forEach.call(files, readAndPreview);
+    }
+  }
+ 
+ 
+  
+</script>
+

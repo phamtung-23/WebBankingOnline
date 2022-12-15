@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Design by foolishdeveloper.com -->
+    <title>Glassmorphism login Form Tutorial in html css</title>
+ 
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+    <!--Stylesheet-->
+    <style media="screen">
+     
+body{
+    background-color: #c3c3c5;
+}
+
+
+form{
+    height: max-content;
+    width: 400px;
+    margin: auto;
+    background-color: rgba(255, 255, 255, 0.937);
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255,255,255,0.1);
+    box-shadow: 0 0 40px rgba(8,7,16,0.6);
+    padding: 50px 35px;
+}
+form *{
+    font-family: 'Poppins',sans-serif;
+    color: #0d0d0d;
+    letter-spacing: 0.5px;
+    outline: none;
+    border: none;
+}
+form h3{
+    font-size: 32px;
+    font-weight: 500;
+    line-height: 42px;
+    text-align: center;
+}
+
+label{
+    display: block;
+    margin-top: 30px;
+    font-size: 16px;
+    font-weight: 500;
+}
+input{
+    display: block;
+    height: 50px;
+    width: 100%;
+    background-color: rgba(255,255,255,0.07);
+    border-radius: 3px;
+    padding: 0 10px;
+    margin-top: 8px;
+    font-size: 14px;
+    font-weight: 300;
+}
+::placeholder{
+    color: #706a6a;
+}
+button{
+    margin-top: 15px;
+    width: 100%;
+    background-color: #2f2d2d;
+    color: #080710;
+    padding: 15px 0;
+    font-size: 18px;
+    font-weight: 600;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.social{
+  margin-top: 30px;
+  display: flex;
+}
+.social div{
+  background: red;
+  width: 150px;
+  border-radius: 3px;
+  padding: 5px 10px 10px 5px;
+  background-color: rgba(255,255,255,0.27);
+  color: #eaf0fb;
+  text-align: center;
+}
+.social div:hover{
+  background-color: rgba(255,255,255,0.47);
+}
+.social .fb{
+  margin-left: 25px;
+}
+.social i{
+  margin-right: 4px;
+}
+.forgetPass{
+    padding-top:15px;
+    font-size: 15px;
+}
+.createAccount{
+    padding-top:15px;
+    font-size: 13px;
+
+}
+    </style>
+</head>
+<body>
+    <div>
+        <a class="btn btn-outline-light mt-3" href="/forgetPass"><i class="fa-solid fa-arrow-left"></i> Quay về</a>
+    </div>
+    <div class="background">
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+    <form onsubmit="return false;" id="form-verify">
+        <h3>Xác thực OTP</h3>
+        <p id="emailVerify" class=" text-center"><i>{{email}}</i></p>
+        <p id="userNameVerify" class=" text-center" style="display: none"><i>{{userName}}</i></p>
+        <label for="otpCode">Mã OTP</label>
+        <input type="text" placeholder="Vui lòng nhập mã OTP..." required id="otpCode">
+        
+        <div id="successSignIn" class="alert alert-success mt-3" role="alert" style="display:none"></div>
+        <div id="errorSignIn" class="alert alert-danger mt-3" role="alert" style="display:none"></div>
+
+        <button class="colorBtn">Xác nhận</button>
+    </form>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        //xử li form đăng nhập
+        let formVerify = document.getElementById('form-verify')
+
+        let userName = document.getElementById('userNameVerify')
+        let email = document.getElementById('emailVerify')
+        let otpCode = document.getElementById('otpCode')
+        
+        formVerify.addEventListener('submit', () => {
+            console.log(otpCode.value)
+            const otpData = {
+                otp: otpCode.value,
+            }
+
+            fetch(`/api/forgetPass/verify/${userName.innerText}`,{
+                method: 'POST',
+                body: JSON.stringify(otpData),
+                headers: {'Content-Type': 'application/json'},
+            }).then((res) => res.json())
+                .then(data => {
+                    console.log(data)
+                    if(data.status == 'error') {
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'error',
+                            title: data.error,
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(()=>{
+                            //location.reload()
+                        })
+                    }else{
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'success',
+                            title: data.success,
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(()=>{
+                            window.location.replace(`/recoverPassword/${data.data}`)
+                        })
+                    }
+                })
+            })
+    </script>
+</body>
+</html>
