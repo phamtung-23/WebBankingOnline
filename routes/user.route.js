@@ -2,6 +2,7 @@ const express = require('express')
 const fileUpload = require('express-fileupload')
 const router = express.Router();
 const userController = require('../app/controllers/UserController')
+const adminController = require('../app/controllers/AdminController')
 const multer = require('multer');
 const jwt = require('jsonwebtoken')
 const db = require('../db_connect')
@@ -34,11 +35,7 @@ function loggedIn(req, res, next) {
 }
 
 // xử lý về tài khoản user
-router.post('/completeUser/:idUser', userController.handleCompleteUser)
-router.post('/deleteUser/:idUser', userController.handleDeleteUser)
-router.post('/upDateInfoUser/:idUser', userController.handleUpdateInfoUser)
-router.post('/upDateImage/:idUser',upload.array('myImage', 12),userController.handleUpdateImage)
-router.post('/restoreUser/:idUser', userController.handleRestoreUser)
+
 router.get('/getUser', userController.handleGetUser)
 
 // Xữ lý về các chức năng user

@@ -19,132 +19,7 @@ class UserController{
       }
     })
   }
-  // [POST] apiUser/completeUser
-  // xác nhận tài khoản từ phía admin
-  handleCompleteUser(req, res, next){
-    const userName = req.params.idUser
-
-    if (!userName){
-      res.json({status:'error', error: 'Đã xảy ra lỗi'})
-    }else {
-      db.query('UPDATE `user` SET `trangthai`=? WHERE username = ?',[1, userName], (err, result)=>{
-        if(err){throw err}
-        if(result.affectedRows == 1){
-          res.json({status:'success', success:'Xác minh tài khoản thành công!!!'})
-        }else{
-          res.json({status:'error', success:'Đã xảy ra lỗi!!!'})
-        }
-      })
-    }
-  }
-
-  // vô hiệu hóa tài khoản từ phía admin
-  handleDeleteUser(req, res, next){
-    const userName = req.params.idUser
-
-    if (!userName){
-      res.json({status:'error', error: 'Đã xảy ra lỗi'})
-    }else {
-      db.query('UPDATE `user` SET `trangthai`=? WHERE username = ?',[2, userName], (err, result)=>{
-        if(err){throw err}
-        if(result.affectedRows == 1){
-          res.json({status:'success', success:'Tài khoản đã được vô hiệu hóa!!!'})
-        }else{
-          res.json({status:'error', success:'Đã xảy ra lỗi!!!'})
-        }
-      })
-    }
-  }
-  // chuyển sang trạng thái chờ cập nhật tài khoản từ phía admin
-  handleUpdateInfoUser(req, res, next){
-    const userName = req.params.idUser
-
-    if (!userName){
-      res.json({status:'error', error: 'Đã xảy ra lỗi'})
-    }else {
-      db.query('UPDATE `user` SET `trangthai`=? WHERE username = ?',[3, userName], (err, result)=>{
-        if(err){throw err}
-        if(result.affectedRows == 1){
-          res.json({status:'success', success:'Đã gửi yêu cầu cập nhật!!!'})
-        }else{
-          res.json({status:'error', success:'Đã xảy ra lỗi!!!'})
-        }
-      })
-    }
-  }
-  // khôi phục tài khoản cho user bị vô hiệu hóa từ phía admin
-  handleRestoreUser(req, res, next){
-    const userName = req.params.idUser
-
-    if (!userName){
-      res.json({status:'error', error: 'Đã xảy ra lỗi'})
-    }else {
-      db.query('UPDATE `user` SET `trangthai`=? WHERE username = ?',[0, userName], (err, result)=>{
-        if(err){throw err}
-        if(result.affectedRows == 1){
-          res.json({status:'success', success:'Khôi phục tài khoản thành công!!!'})
-        }else{
-          res.json({status:'error', success:'Đã xảy ra lỗi!!!'})
-        }
-      })
-    }
-  }
-// xử lý upload ảnh và lưu hình ảnh vào database
-  handleUpdateImage(req, res, next){
-    // console.log(req.body)
-    const files = req.files
-    const imagesT = files[0].originalname
-    const imagesS = files[1].originalname
-    const idUsername = req.params.idUser
-
-    if (!idUsername || !imagesT || !imagesS) {
-      res.send({status:'error', error:'Vui lòng chọn đầy đủ thông tin!!!'})
-    }else{
-      db.query('select * from cccd where username = ?',[idUsername], async (err, result2)=>{
-        if (err)throw err
-        if (result2.length<=0){
-          db.query('INSERT INTO `cccd`(`username`, `matTruoc`, `matSau`) VALUES (?,?,?)', [idUsername,imagesT,imagesS], async (err, result)=>{
-            if (err)throw err
-            if(result.affectedRows != 1){
-              res.redirect('/profile')
-            }else{
-              db.query('UPDATE `user` SET `trangthai`=? WHERE username = ?',[0, idUsername], async(err, result)=>{
-                if (err)throw err
-                if(result.affectedRows != 1){
-                  res.redirect('/profile')
-                }else{
-                  res.redirect('/profile')
-                }
-              })
-            }
-    
-          })
-
-        }else{
-          db.query('UPDATE `cccd` SET `matTruoc`=?,`matSau`=? WHERE username = ?', [imagesT,imagesS,idUsername], async (err, result)=>{
-            if (err)throw err
-            if(result.affectedRows != 1){
-              res.redirect('/profile')
-            }else{
-              db.query('UPDATE `user` SET `trangthai`=? WHERE username = ?',[0, idUsername], async(err, result)=>{
-                if (err)throw err
-                if(result.affectedRows != 1){
-                  res.redirect('/profile')
-                }else{
-                  res.redirect('/profile')
-                }
-              })
-            }
-    
-          })
-        }
-      })
-
-
-      // res.json({status:'success', success:'Update Thành công!!'})
-
-    }
-  }
+  
 
 
 
@@ -257,7 +132,7 @@ class UserController{
   }
 // hiển thị giao diện rút tiền
   handleRutTien(req, res, next) {
-    res.render('user/rutTien')
+    res.render('user/rutTien',{ isLogin:true,data: req.user})
   }
 
 // xử lý rút tiền về tài khoản
@@ -317,8 +192,8 @@ class UserController{
     db.query('SELECT `maNganHang`, `tenNganHang`, `icon` FROM `thongtintknganhang`',async(err, result)=>{
       if (err) {throw err}
       if (result){
-        console.log(result)
-        res.render('user/chuyenTien',{infoNH: result})
+        // console.log(result)
+        res.render('user/chuyenTien',{infoNH: result, isLogin:true,data: req.user})
       }
     })
   }
@@ -352,7 +227,7 @@ class UserController{
             db.query('SELECT `SoDu` FROM `taikhoan` WHERE username = ?',[req.user.username], async(err, result3)=>{
               if(err) {throw err}
               if(result3){
-                res.render('user/inputMoney',{thongTinTaiKhoan: result[0], thongTinNganHang: result1[0],HoVaTen: result2[0].HoVaTen, soDu:result3[0].SoDu})
+                res.render('user/inputMoney',{thongTinTaiKhoan: result[0], thongTinNganHang: result1[0],HoVaTen: result2[0].HoVaTen, soDu:result3[0].SoDu,  isLogin:true,data: req.user})
               }
             })
           })
@@ -378,7 +253,7 @@ class UserController{
                 if (err) throw err
                 if (result2){
                     let tongTien  = parseInt(result2[0].SoDuTK) + parseInt(soTienChuyen)
-                    console.log(tongTien)
+                    // console.log(tongTien)
                     let xacNhan = 0
                     if(soTienChuyen >= 5000000){
                       xacNhan = 0

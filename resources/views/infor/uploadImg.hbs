@@ -7,7 +7,7 @@
     <h2>Cập nhật CCCD</h2>
     <input id="username" type="text" value={{data.username}} style="display: none;"/>
     <p class="nameFormImage">Họ và Tên: {{data.HoVaTen}}</p>
-    <form id="form-submit-image" action="/apiUser/upDateImage/{{data.username}}" method="post"  enctype="multipart/form-data"> 
+    <form id="form-submit-image" action="/admin/upDateImage/{{data.username}}" method="post"  enctype="multipart/form-data"> 
       <label  for="myImage">Vui lòng chọn ảnh CCCD mặt trước và sau</label>
       <input id="files" class="form-control" type="file" name="myImage" accept="image/*" multiple required/>
       <button id="btn-submit" class="btn mt-3 colorBtn">Upload Image</button>

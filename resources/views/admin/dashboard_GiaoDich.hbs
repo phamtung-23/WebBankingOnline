@@ -22,7 +22,7 @@
         <div class="category-content">
           <ul id="fruits-nav" class="nav flex-column">
             <li class="nav-item">
-              <a href="/dashboardUser" class="nav-link">
+              <a href="admin/dashboardUser" class="nav-link">
                 <i class="fa-solid fa-users mr-3"></i>
                 Tất cả
               </a>
@@ -36,7 +36,7 @@
         <div class="category-content">
           <ul id="fruits-nav" class="nav flex-column">
             <li class="nav-item">
-              <a href="/admin/dashboardUser/giaoDich" class="nav-link">
+              <a href="/dashboardUser/giaoDich" class="nav-link">
                 <i class="fa-solid fa-circle-dollar-to-slot mr-3"></i>
                 Rút tiền và chuyển tiền
               </a>
@@ -52,8 +52,9 @@
     <table class="table">
       <thead class="thead-light ">
         <tr>
-          <th scope="col">UserID</th>
-          <th scope="col">Họ và tên</th>
+          <th scope="col">ID</th>
+          <th scope="col">UserName</th>
+          <th scope="col">Tên Giao Dịch</th>
           <th scope="col">Trạng Thái</th>
           <th scope="col" >Chức năng</th>
         </tr>
@@ -70,53 +71,43 @@
   let tbody = document.getElementById('tbody-user')
 
 // tải danh sach user
-  fetch('/apiUser/getUser',{
+  fetch('/admin/getLichSuGD',{
     method: 'GET',
     headers: {'Content-Type': 'application/json'},
   }).then((res) => res.json())
     .then(data => {
       let users = data.user
       users.forEach(user => {
-        if (user.LoaiTaiKhoan == 0){
           let row = document.createElement('tr');
-          let userId = document.createElement('td');
-          let name = document.createElement('td');
+          let ID = document.createElement('td');
+          let userName = document.createElement('td');
+          let tenGD = document.createElement('td');
           let trangThai = document.createElement('td');
           let chucNang = document.createElement('td');
 
-          userId.innerHTML = user.username
-
-          if (!user.HoVaTen){
-            name.innerHTML='<span class="badge badge-pill badge-secondary">Chưa cập nhật</span>'
-          }else{
-            name.innerHTML =  `<a href='admin/dashboardUser/profileUser/${user.username}' class='text-dark'>${user.HoVaTen}</a>`
-          }
-
-          if(user.trangthai == 0){
+          ID.innerHTML = user.IdGD
+          userName.innerHTML=user.username
+          
+          tenGD.innerHTML = user.TenGD
+          if(user.xacMinhGD == 0){
             trangThai.innerHTML = `<span class="badge badge-pill badge-warning">Chờ xác minh</span>`
-            chucNang.innerHTML = `<button onclick='completeUser(${user.username})' class="btn btn-completeUser btn-success">Xác nhận</button>
-                                  <button onclick='updateUser(${user.username})' class="btn btn-updateUser btn-warning">Cập nhật thông tin</button>
-                                  <button onclick='deleteUser(${user.username})' class="btn btn-deleteUser btn-danger">Hủy</button>`
-          }else if(user.trangthai == 1){
+            chucNang.innerHTML = `<button onclick='completeGD(${user.IdGD})' class="btn btn-completeUser btn-success">Xác nhận</button>
+                                  <button onclick='deleteGD(${user.IdGD})' class="btn btn-deleteUser btn-danger">Hủy</button>`
+          }else if(user.xacMinhGD == 1){
             trangThai.innerHTML = `<span class="badge badge-pill badge-info">Đẫ xác minh</span>`
-            chucNang.innerHTML = `<button onclick='updateUser(${user.username})' class="btn btn-updateUser btn-warning">Cập nhật thông tin</button>
-                                  <button onclick='deleteUser(${user.username})' class="btn btn-deleteUser btn-danger">Hủy</button>`
-          }else if(user.trangthai == 2){
-            trangThai.innerHTML = `<span class="badge badge-pill badge-danger">Đã vô hiệu hóa</span>`
-            chucNang.innerHTML = `<button onclick='restoreUser(${user.username})' class="btn btn-updateUser btn-info">Khôi phục</button>`
-          }else if(user.trangthai == 3){
-            trangThai.innerHTML = `<span class="badge badge-pill badge-primary">Chờ cập nhật</span>`
-            chucNang.innerHTML = `<button onclick='completeUser(${user.username})' class="btn btn-completeUser btn-success">Xác nhận</button>
-                                  <button onclick='updateUser(${user.username})' class="btn btn-updateUser btn-warning">Cập nhật thông tin</button>
-                                  <button onclick='deleteUser(${user.username})' class="btn btn-deleteUser btn-danger">Hủy</button>`
+            chucNang.innerHTML = `<button onclick='updateUser(${user.IdGD})' class="btn btn-updateUser btn-info">Xem thông tin</button>`
+          }else if(user.xacMinhGD == 2){
+            trangThai.innerHTML = `<span class="badge badge-pill badge-danger">Đã hủy</span>`
+            chucNang.innerHTML = `<button onclick='updateUser(${user.IdGD})' class="btn btn-updateUser btn-info">Xem thông tin</button>`
           }
-          row.appendChild(userId)
-          row.appendChild(name)
+          row.appendChild(ID)
+          row.appendChild(userName)
+          row.appendChild(tenGD)
           row.appendChild(trangThai)
           row.appendChild(chucNang)
 
           tbody.appendChild(row)
-        }
+        
       })
     })
  
@@ -124,11 +115,11 @@
   let alertSuccess = document.getElementById('alertSuccess')
   let alertError = document.getElementById('alertError')
   // gủi yêu cầu xác nhận tài khoản người dùng
-  function completeUser(idUser){
-    let url = `/admin/completeUser/${idUser}`
+  function completeGD(idGD){
+    let url = `/admin/xacNhanGiaoDich/${idGD}`
     fetch(url,{
       method: 'POST',
-      body: JSON.stringify({id: idUser}),
+      body: JSON.stringify({id: idGD}),
       headers: {'Content-Type': 'application/json'}
     }).then((res) => res.json())
       .then(data => {
@@ -149,11 +140,11 @@
       })
   }
   // gửi yêu cầu vô hiệu hóa tài khoản
-  function deleteUser(idUser){
-    let url = `/admin/deleteUser/${idUser}`
+  function deleteGD(idGD){
+    let url = `/admin/huyGiaoDich/${idGD}`
     fetch(url,{
       method: 'POST',
-      body: JSON.stringify({id: idUser}),
+      body: JSON.stringify({id: idGD}),
       headers: {'Content-Type': 'application/json'}
     }).then((res) => res.json())
       .then(data => {
@@ -174,56 +165,7 @@
       }) 
   }
 
-  // gửi yêu cầu cập nhật thông tin tài khoản
-  function updateUser(idUser){
-    let url = `/admin/upDateInfoUser/${idUser}`
-    fetch(url,{
-      method: 'POST',
-      body: JSON.stringify({id: idUser}),
-      headers: {'Content-Type': 'application/json'}
-    }).then((res) => res.json())
-      .then(data => {
-        console.log(data)
-        if(data.status == 'error'){
-          alert( data.error);
-        }else{
-          Swal.fire({
-            position: 'center',
-            icon: 'success',
-            title: data.success,
-            showConfirmButton: false,
-            timer: 1500
-          }).then(()=>{
-            location.reload()
-          })
-        }
-      }) 
-  }
-  // gửi yêu khôi phục tài khoản
-  function restoreUser(idUser){
-    let url = `/admin/restoreUser/${idUser}`
-    fetch(url,{
-      method: 'POST',
-      body: JSON.stringify({id: idUser}),
-      headers: {'Content-Type': 'application/json'}
-    }).then((res) => res.json())
-      .then(data => {
-        console.log(data)
-        if(data.status == 'error'){
-          alert( data.error);
-        }else{
-          Swal.fire({
-            position: 'center',
-            icon: 'success',
-            title: data.success,
-            showConfirmButton: false,
-            timer: 1500
-          }).then(()=>{
-            location.reload()
-          })
-        }
-      }) 
-  }
+ 
 
 </script>
 <!-- /main sidebar -->

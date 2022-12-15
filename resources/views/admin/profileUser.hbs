@@ -14,49 +14,31 @@
 <div class="row">
   <div id="sidebar-main" class="col-sm-3 sidebar-dashboard sidebar-default sidebar-separate sidebar-fixed">
     <div class="sidebar-content">
-      <div class="sidebar-category sidebar-default">
-        <div class="sidebar-user">
-          <div class="category-content">
-            <h6>{{data.HoVaTen}}</h6>
-            <small>{{data.Email}}</small>
-          </div>
-        </div>
-      </div>
       <!-- /Sidebar Category -->
       <div class="sidebar-category sidebar-default">
         <div class="category-title">
-          <span>Dashboard</span>
+          <span>Tài khoản</span>
         </div>
         <div class="category-content">
           <ul id="fruits-nav" class="nav flex-column">
             <li class="nav-item">
-              <a href="#" class="nav-link">
+              <a href="/dashboardUser" class="nav-link">
                 <i class="fa-solid fa-users mr-3"></i>
-                Tất cả tài khoản
+                Tất cả
               </a>
             </li>
+          </ul>
+          <!-- /Nav -->
+        </div>
+        <div class="category-title">
+          <span>Giao dịch</span>
+        </div>
+        <div class="category-content">
+          <ul id="fruits-nav" class="nav flex-column">
             <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="fa-solid fa-list-check mr-3"></i>
-                Chờ xác minh
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="#" class="nav-link ">
-                <i class="fa-solid fa-check mr-3"></i>
-                Đã xác minh
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="#" class="nav-link ">
-                <i class="fa-solid fa-lock mr-3"></i>
-                Bị vô hiệu hóa
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="#" class="nav-link ">
-                <i class="fa-regular fa-address-card mr-3"></i>
-                Chờ cập nhật
+              <a href="/dashboardUser/giaoDich" class="nav-link">
+                <i class="fa-solid fa-circle-dollar-to-slot mr-3"></i>
+                Rút tiền và chuyển tiền
               </a>
             </li>
           </ul>
@@ -72,18 +54,18 @@
       <div class="row">
         <div class="col-lg-4 p-5">
           <img class="rounded mb-2" src="https://photo-cms-sggp.zadn.vn/w580/Uploaded/2022/dqmbbcvo/2022_06_04/lionelmessi_qnxe.jpg" alt="" width="200" height="200">
-          <div><b>Họ và tên:</b> {{data.HoVaTen}}</div>
-          <div><b>Email:</b>{{data.Email}}</div>
-          <div><b>Số điện thoại:</b> {{data.SoDienThoai}}</div>
-          <div><b>Sinh nhật:</b> {{data.NgayThangNamSinh}}</div>
-          <div><b>Địa chỉ:</b> {{data.DiaChi}}</div>
-          {{#if (soSanh data.trangthai 0)}} 
+          <div><b>Họ và tên:</b> {{dataUser.HoVaTen}}</div>
+          <div><b>Email:</b>{{dataUser.Email}}</div>
+          <div><b>Số điện thoại:</b> {{dataUser.SoDienThoai}}</div>
+          <div><b>Sinh nhật:</b> {{dataUser.NgayThangNamSinh}}</div>
+          <div><b>Địa chỉ:</b> {{dataUser.DiaChi}}</div>
+          {{#if (soSanh dataUser.trangthai 0)}} 
             <div><b>Trạng thái tài khoản:</b> <span class="badge badge-pill badge-warning">Chờ xác minh</span></div>
-          {{else if (soSanh data.trangthai 1)}}
+          {{else if (soSanh dataUser.trangthai 1)}}
             <div><b>Trạng thái tài khoản:</b> <span class="badge badge-pill badge-info">Đẫ xác minh</span></div>
-          {{else if (soSanh data.trangthai 2)}}
+          {{else if (soSanh dataUser.trangthai 2)}}
             <div><b>Trạng thái tài khoản:</b> <span class="badge badge-pill badge-danger">Đã vô hiệu hóa</span></div>
-          {{else if (soSanh data.trangthai 3)}}
+          {{else if (soSanh dataUser.trangthai 3)}}
             <div><b>Trạng thái tài khoản:</b> <span class="badge badge-pill badge-primary">Chờ cập nhật</span></div>
           {{/if}}
         </div>
