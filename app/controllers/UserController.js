@@ -347,9 +347,14 @@ class UserController{
         // console.log(result[0].maNganHang)
         db.query('SELECT * FROM `thongtintknganhang` WHERE maNganHang = ?',[result[0].maNganHang], async(err, result1)=>{
           // console.log(result1[0].icon)
-          db.query('SELECT * FROM `tknganhang` WHERE username = ?',[req.user.username], async(err, result2)=>{
+          db.query('SELECT `HoVaTen` FROM `user` WHERE username = ?',[req.user.username], async(err, result2)=>{
             // console.log(result2[0])
-            res.render('user/inputMoney',{thongTinTaiKhoan: result[0], thongTinNganHang: result1[0],thongTinTKGoc: result2[0]})
+            db.query('SELECT `SoDu` FROM `taikhoan` WHERE username = ?',[req.user.username], async(err, result3)=>{
+              if(err) {throw err}
+              if(result3){
+                res.render('user/inputMoney',{thongTinTaiKhoan: result[0], thongTinNganHang: result1[0],HoVaTen: result2[0].HoVaTen, soDu:result3[0].SoDu})
+              }
+            })
           })
         })
       }
@@ -361,18 +366,17 @@ class UserController{
     const {TKGoc,TkNhan,soTienChuyen} = req.body
     const username = req.user.username
     // console.log(TKGoc,TkNhan,soTienChuyen)
-    db.query('SELECT `SoDuTK`FROM `tknganhang` WHERE STK = ?',[TKGoc], async(err, result)=>{
+    db.query('SELECT `SoDu`FROM `taikhoan` WHERE username = ?',[username], async(err, result)=>{
       if (err) throw err
       if (result){
-        if (result[0].SoDuTK > soTienChuyen){
-          let tongTien  = result[0].SoDuTK - soTienChuyen
-          db.query('UPDATE `tknganhang` SET `SoDuTK`=? WHERE STK = ?',[tongTien,TKGoc], async(err, result1)=>{
+        if (result[0].SoDu > soTienChuyen){
+          let tongTien  = result[0].SoDu - soTienChuyen
+          db.query('UPDATE `taikhoan` SET `SoDu`=? WHERE username = ?',[tongTien,username], async(err, result1)=>{
             if (err) throw err
             if (result1.affectedRows == 1){
               db.query('SELECT `SoDuTK`FROM `tknganhang` WHERE STK = ?',[TkNhan], async(err, result2)=>{
                 if (err) throw err
                 if (result2){
-                  if (result2[0].SoDuTK > soTienChuyen){
                     let tongTien  = parseInt(result2[0].SoDuTK) + parseInt(soTienChuyen)
                     console.log(tongTien)
                     let xacNhan = 0
@@ -396,9 +400,7 @@ class UserController{
                         res.json({status: 'error', error:'Chuyển tiền thất bại!!!'})
                       }
                     })
-                  }else{
-                    res.json({status: 'error', error:'Số dư không đủ!!!'})
-                  }
+                  
                 }else{
                   res.json({status: 'error', error:'Chuyển tiền thất bại!!!'})
                 }
