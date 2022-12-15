@@ -411,6 +411,58 @@ class UserController{
       }
     })
   }
+
+  //hiển thị giao diện nạp thẻ cáo điên thoại
+  handlenNpTheCao(req, res, next){
+    res.render('user/napTheCaoTest',{isLogin: true,data:req.user})
+  }
+
+  // xử lý nạp tiền điện thoại
+  handlenNapTienDT(req, res, next){
+    const {numberPhone,nhaMang,menhGia} = req.body;
+    db.query('SELECT `SoDuTK`FROM `tknganhang` WHERE username = ?',[req.user.username], async(err, result)=>{
+      if (err) throw err
+      if (result){
+        if (result[0].SoDuTK > (parseInt(menhGia)*1000)){
+          let maSoThe = ''
+          let tongTien  = result[0].SoDuTK - (parseInt(menhGia)*1000)
+          db.query('SELECT `MaThe` FROM `themua` WHERE NhaMang = ?',[nhaMang], async(err, result2)=>{
+            if(err) throw err
+            if(result2){
+              // console.log(result2)
+              maSoThe = result2[0].MaThe + (Math.floor(Math.random() * (9999 - 1000) ) + 1000).toString()
+              // console.log(maSoThe)
+              db.query('UPDATE `tknganhang` SET `SoDuTK`=? WHERE username = ?',[tongTien, req.user.username], async(err, result1)=>{
+                if (err) throw err
+                // console.log(result1)
+                if(result1.affectedRows == 1){
+                  let xacNhan = 1
+                  db.query('INSERT INTO `thongtingd`( `username`, `TenGD`, `GhiChu`,`xacMinhGD`) VALUES (?,?,?,?)',[req.user.username,'Nạp tiền điện thoại','Mua thẻ cào điện thoại thôi mà!!!',xacNhan], async(err, result4)=>{
+                    if (err) throw err
+                    if (result4.affectedRows==1){
+                      res.json({status:'success', success:'Mua thẻ thành công!!!', maSoThe:maSoThe})
+                    }else{
+                      res.json({status: 'error', error:'Chuyển tiền thất bại!!!'})
+                    }
+                  })
+                }else{
+                  res.json({status:'error', error:'Lỗi mua thẻ!!'})
+                }
+              })
+            }else{
+              res.json({status:'error', error:'Lỗi mua thẻ!!'})
+            }
+          })
+          // console.log(tongTien)
+          // res.json({status:'error', error:'Lỗi mua thẻ!!'})
+        }else{
+          res.json({status:'error', error:'Số dư không đủ!!'})
+        }
+      }else{
+        res.json({status:'error', error:'Lỗi mua thẻ!!'})
+      }
+    })
+  }
 }
 
 module.exports = new UserController;

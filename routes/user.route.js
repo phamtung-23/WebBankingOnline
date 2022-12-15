@@ -43,12 +43,14 @@ router.get('/getUser', userController.handleGetUser)
 
 // Xữ lý về các chức năng user
 router.get('/TTNapTien',loggedIn, userController.handleTTNapTien)
+router.get('/napTheCao',loggedIn, userController.handlenNpTheCao)
 router.get('/rutTien',loggedIn, userController.handleRutTien)
 router.get('/chuyenTien',loggedIn, userController.handleChuyenTien)
 router.get('/chuyenTien/nhapSoTien/:stk',loggedIn, userController.handleNhapSoTien)
 router.get('/napTien',loggedIn, userController.handleNapTien)
 router.get('/lichSuGD',loggedIn, userController.handleLichSuGD)
 
+router.post('/napTheCao',loggedIn, userController.handlenNapTienDT)
 router.post('/chuyenTien/denTaiKhoan',loggedIn, userController.handleChuyenDenTaiKhoan)
 router.post('/chuyenTien/checkNH',loggedIn, userController.handleCheckNH)
 router.post('/napTien', userController.handleInsertPaymentCard)
